@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:deta-layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-store"/>
+    <meta http-equiv="Expires" content="0" />
+    <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">UI演示</title>
+    
+    <link th:href="@{/static/styles/global.css}"  rel="stylesheet" type="text/css"/>
+    <link th:href="@{/static/scripts/bootstrap-3.3.7-dist/css/bootstrap.css}" rel="stylesheet" type="text/css" />
+    
+    <script th:src="@{/static/scripts/jquery.min.js}"></script>
+    <script th:src="@{/static/scripts/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
+</head>
+<body>
+    <div th:replace="fragments/header :: header"></div>
+    <div class="locationLine" layout:fragment="prompt">当前位置：首页 &gt; <em>页面</em></div>
+    <div th:replace="fragments/center :: center"></div>
+    <div th:replace="fragments/footer :: footer"></div>
+</body>
+</html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="fragments/layout">
+<head>
+    <title>电影管理</title>
+    <script>
+        $(function(){
+            getList(1);
+        });
+        function getList(pn){
+        	clear_dom();
+            $.ajax({
+                url:"/movie/getList",
+                type:"POST",
+                data:{"pn":pn},
+                async:true,
+                success:function(data){
+                    //1. 解析并显示员工数据
+                    build_file_table(data);
+                    //2. 解析并显示分页数据
+                    build_page_info(data);
+                    //3. 解析并显示分页条数据
+                    build_page_nav(data);
+                },
+                error:function(){
+
+                }
+            });
+        }
+        
+        function clear_dom(){
+        	$("#fileTab tbody").empty();
+        	$("#page_info").empty();
+        	$("#page_nav").empty();
+        }
+        
+        function build_page_nav(data){
+        	var pageInfo = data.extend.pageInfo;
+        	var navigatepageNums = pageInfo.navigatepageNums;
+        	
+        	var pageUl = $("<ul></ul>").addClass("pagination");
+        	$.each(navigatepageNums,function(index,item){
+        		var pageLi;
+        		if(item==pageInfo.pageNum){
+        			pageLi = $("<li class='active'></li>").append($("<a></a>").attr("href","#").text(item));
+        		}else{
+        			pageLi = $("<li></li>").append($("<a></a>").attr("href","#").text(item));
+        		}
+        		pageLi.click(function(){
+        			getList(item);
+        		});
+        		pageUl.append(pageLi);
+        	});
+        	pageUl.appendTo($("#page_nav"));
+        }
+        
+        function build_page_info(data){
+        	var pageInfo = data.extend.pageInfo;
+        	$("#page_info").append("当前"+pageInfo.pageNum+"页，总"+pageInfo.pages+"页，总"+pageInfo.total+"条记录")
+        }
+        
+        function getTd(){
+        	var tdMod = $("<td style='overflow:hidden;white-space:nowrap;text-overflow:ellipsis;'></td>");
+        	return tdMod;
+        }
+        function build_file_table(data){
+            var files = data.extend.pageInfo.list;
+            
+            $.each(files,function(index,item){
+                var id = getTd().append(item.id);
+                var name = getTd().append(item.name);
+                var groupc = getTd().append(item.groupc);
+                var path = getTd().append(item.path);
+                var size = getTd().append(item.size);
+                var downBtn = $("<button></button>").addClass("btn btn-default btn-xs").addClass("l-btn").append("流下载");
+                var downBtn1 = $("<button></button>").addClass("btn btn-default btn-xs").addClass("e-btn").append("实体下载");
+                var down = $("<td></td>").append(downBtn);
+                var down1 = $("<td></td>").append(downBtn1);
+                $("<tr></tr>").append(id).
+                    append(name).
+                    append(groupc).
+                    append(path).
+                    append(size).append(down).append(down1).appendTo("#fileTab tbody");
+            });
+        }
+        function onSubmit(){
+            var formData = new FormData($("#allForm")[0]);
+            $.ajax({
+                url:  "/movie/uploadPic",
+                type: "POST",
+                data: formData,// 你的formid
+                async: false,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success: function(data) {
+                    alert(data.msg);
+                    $("#pictureFile").val("");
+                    getList(1);
+                },
+                error: function() {
+                    alert("Connection error");
+                }
+            });
+        }
+        function download1(id){
+            var form =$('<form>');
+            form.attr('style','display:none');
+            form.attr('target','');
+            form.attr('method','post');
+            form.attr('action',"/movie/download1");
+            var input = $('<input>');
+            input.attr('type','hidden');
+            input.attr('name','id');
+            input.attr('value',id);
+            $('body').append(form);
+            form.append(input);
+            form.submit();
+            form.remove();
+        }
+        function download2(id){
+        	location.href = "/movie/download2?id="+id;
+        }
+        $(document).on("click",".l-btn",function(){
+        	var id = $(this).parents("tr").children("td:eq(0)").text();
+        	download1(id);
+        });
+        $(document).on("click",".e-btn",function(){
+        	var id = $(this).parents("tr").children("td:eq(0)").text();
+        	download2(id);
+        });
+    </script>
+	<body>
+	    <div class="locationLine" layout:fragment="prompt">
+			当前位置：首页 &gt; <em >电影管理</em>
+	    </div>
+	
+	    <div class="statisticBox w-782"  layout:fragment="content">
+	        <form id="allForm">
+	            <input id="pictureFile" name="pictureFile" type="file"/>
+	        </form>
+	        <input type="button" value="提交" onclick="onSubmit()"/><br/>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+				        <table id="fileTab" class="table table-hover" style="margin-top: 10px;table-layout:fixed;">
+				            <thead>
+				                <tr>
+				                    <td>序列</td>
+				                    <td>名称</td>
+				                    <td>组名</td>
+				                    <td>路径</td>
+				                    <td>大小</td>
+				                </tr>
+				            </thead>
+				            <tbody>
+				
+				            </tbody>
+				        </table>
+					</div>
+				</div>
+				<!-- 显示分页 -->
+				<div class="row">
+					<!-- 分页信息 -->
+					<div class="col-md-6" id="page_info"></div>
+					<!-- 分页按钮 --> 
+					<div class="col-md-6" id="page_nav"></div>
+				</div>
+			</div>
+	        <!--<div style="text-align: left;">
+	            # 代表 获取资源本地化文件<br/>
+	            $ 表示从model里面获取<br/>
+	            # $这2个可以一起用 比如#{'system.'+${model.id}} -&#45;&#45;&#45;&#45;这相当于 #{system.01}的资源本地化文件中的system.01内容<br/>
+	            &#45;&#45;&#45;&#45;&#45;&#45;Request&#45;&#45;&#45;&#45;&#45;&#45;
+	            <p th:text="${msg}"></p>
+	            <p th:text="${#httpServletRequest.getAttribute('msg')}">111</p>
+	            &#45;&#45;&#45;&#45;&#45;&#45;Response&#45;&#45;&#45;&#45;&#45;&#45;
+	            <p th:text="${session.msg}"></p>
+	            <p th:text="${#httpSession.getAttribute('msg')}">111</p>
+	            &#45;&#45;&#45;&#45;&#45;&#45;ServletContext-&#45;&#45;&#45;&#45;&#45;&#45;
+	            <p th:text="${application.myContextAttribute}"></p>
+	            <p th:text="${application.size()}"></p>
+	            <div th:each="attr:${application.keySet()}">
+	                <span th:text="${attr}"></span>
+	                &lt;!&ndash;<span th:text="${application.get(attr)}"></span>&ndash;&gt;
+	            </div>
+	            -&#45;&#45;&#45;&#45;&#45;&#45;Spring Beans-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;<br/>
+	            &lt;!&ndash;<p th:text="${@String.getApplicationUrl()}"></p>&ndash;&gt;
+	            -&#45;&#45;&#45;&#45;&#45;&#45;$和* （变量表达式和星号表达式）-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;
+	            <div th:object="${session.file}">
+	                <p th:text="*{name}">111</p>
+	                <p th:text="*{path}">222</p>
+	            </div>
+	            -&#45;&#45;&#45;&#45;&#45;&#45;th:if-&#45;&#45;&#45;&#45;&#45;&#45;
+	            <div th:if="${session.file.name=='FileName'}" th:each="file,iterStat:${session.files}">
+	                <p th:text="${file.name}">01</p>
+	                <p th:text="${file.path}">01</p>
+	            </div>
+	            -&#45;&#45;&#45;&#45;&#45;&#45;th:each-&#45;&#45;&#45;&#45;&#45;&#45;
+	            <div th:each="file,iterStat:${session.files}">
+	                <p th:text="${file.name}">01</p>
+	                <p th:text="${file.path}">01</p>
+	                <p th:text="|index: ${iterStat.index}; count: ${iterStat.count}; size: ${iterStat.size}; first: ${iterStat.first}|"></p>
+	            </div>
+	            -&#45;&#45;&#45;&#45;&#45;&#45;表达式功能对象：-&#45;&#45;&#45;&#45;&#45;&#45;
+	            #dates：java.util.Date的功能方法类。<br/>
+	            #calendars:类似#dates，面向java.util.Calendar<br/>
+	            #numbers:格式化数字的功能方法类。<br/>
+	            #strings：字符串对象的功能类，contains,startWiths,prepending/appending等等。<br/>
+	            <p th:text="${#strings.isEmpty(msg)}"></p>
+	            #objects:对objects的功能类操作。<br/>
+	            #bools:对布尔值求值的功能方法。<br/>
+	            #arrays：对数组的功能类方法。<br/>
+	            #lists:对lists功能类方法<br/>
+	            #sets<br/>
+	            #maps<br/>
+	            #aggregates:对数组或者集合创建聚合的功能方法，<br/>
+	            th:text="${#aggregates.sum(o.orderLines.{purchasePrice * amount})}"<br/>
+	            #messages:在变量表达式中获取外部信息的功能类方法。<br/>
+	            #ids：处理可能重复的id属性的功能类方法。<br/>
+	        </div>-->
+	    </div>
+	</body>
+</html>

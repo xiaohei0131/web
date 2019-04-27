@@ -1,0 +1,99 @@
+server:
+  port: 8080
+  tomcat:
+    uri-encoding: UTF-8
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/test?characterEncoding=utf8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+    #下面是连接池的补充配置，应用到上面所有数据源中
+    # 初始化大小，最小，最大
+    initialSize: 1
+    minIdle: 3
+    maxActive: 20
+    # 配置获取连接等待超时的时间
+    maxWait: 60000
+    # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+    timeBetweenEvictionRunsMillis: 60000
+    # 配置一个连接在池中最小生存的时间，单位是毫秒
+    minEvictableIdleTimeMillis: 30000
+    # 验证数据库连接的查询语句,这个查询语句必须是至少返回一条数据的SELECT语句
+    validationQuery: select 'x'
+    # 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+    testWhileIdle: true
+    # 申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+    testOnBorrow: false
+    # 归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+    testOnReturn: false
+    # 是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭，并且指定每个连接上PSCache的大小
+    poolPreparedStatements: true
+    maxPoolPreparedStatementPerConnectionSize: 20
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    filters:
+      stat:
+        log-slow-sql: true
+        slow-sql-millis: 1000
+        merge-sql: true
+      wall:
+        config:
+          multi-statement-allow: true
+      #slf4j
+    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    # 合并多个DruidDataSource的监控数据
+    #useGlobalDataSourceStat: true
+  redis:
+      #database: 1
+      # 单机版Redis
+      #host: 192.168.48.128
+      #port: 6379
+      #pool:
+        #max-idle: 8
+        #min-idle: 0
+        #max-wait: -1
+        #max-active: 8
+      # 集群版Redis
+      # cache:
+        # clusterNodes: 192.168.48.128:7000,192.168.48.128:7001,192.168.48.128:7002,192.168.48.132:7003,192.168.48.132:7004,192.168.48.132:7005
+        # commandTimeout: 5000
+  mvc:
+    view:
+      prefix: classpath:/templates
+      suffix: .html
+    static-path-pattern: /static/**
+  thymeleaf:
+    # 是否开启模板缓存，默认true
+    cache: false
+    # 检查模板位置是否存在
+    check-template-location: true
+    # 是否启用MVC-Thymeleaf视图
+    enabled: true
+    # 模板编码
+    encoding: UTF-8
+    # 应该从解析中排除的视图名称列表（用逗号分隔）
+    #excluded-view-names:
+    # 要应用于模板的模板模式。另请参见StandardTemplateModeHandlers。
+    mode: LEGACYHTML5
+    # 在链接网址时预先查看名称的前缀。
+    prefix: classpath:/templates/
+    # 链接网址时附加到视图名称的后缀。
+    suffix: .html
+    # 指定模板的解析顺序，默认为第一个.
+    #template-resolver-order:
+    # 指定使用模板的视图名，多个以逗号分隔
+    #view-names:
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  jmx:
+    # 禁止对外提供Spring MBeans
+    enabled: false
+# 打印SQL
+logging:
+  level:
+    com:
+      yweb: DEBUG

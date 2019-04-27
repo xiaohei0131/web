@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <div th:fragment="center">
+        <table class="globalMainBox" style="position:relative;z-index:1;">
+            <tr>
+                <td class="columnLeftBox" valign="top">
+                    <div th:replace="fragments/nav :: nav"></div>
+                </td>
+                <td class="whiteSpace"></td>
+                <td class="rightColumnBox" valign="top">
+                    <div layout:fragment="content"></div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
