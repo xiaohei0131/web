@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml"
+      layout:decorator="fragments/nowrapper-layout">
+	<head>
+	    <title>401</title>
+	</head>
+	<body>
+	    <div layout:fragment="content">
+			<div class="error-page">
+				<h2 class="headline text-yellow"> 401</h2>
+
+				<div class="error-content">
+					<h3><i class="fa fa-warning text-yellow"></i> Oops! Not logged in yet.</h3>
+
+					<p>
+						Please click <a th:href="@{/login.html}">login</a>.
+					</p>
+				</div>
+				<!-- /.error-content -->
+			</div>
+	    </div>
+	</body>
+</html>

@@ -7,18 +7,48 @@
     <meta http-equiv="Cache-Control" content="no-cache" />
     <meta http-equiv="Cache-Control" content="no-store"/>
     <meta http-equiv="Expires" content="0" />
-    <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE">UI演示</title>
+    <title layout:title-pattern="$DECORATOR_TITLE - $CONTENT_TITLE"></title>
     
-    <link th:href="@{/static/css/global.css}"  rel="stylesheet" type="text/css"/>
-    <link th:href="@{/static/js/bootstrap-3.3.7-dist/css/bootstrap.css}" rel="stylesheet" type="text/css" />
-    
-    <script th:src="@{/static/js/jquery.min.js}"></script>
-    <script th:src="@{/static/js/bootstrap-3.3.7-dist/js/bootstrap.js}"></script>
+    <link th:href="@{/js/bootstrap-3.4.1/css/bootstrap.min.css}"  rel="stylesheet" type="text/css"/>
+    <link th:href="@{/plugins/font-awesome/css/font-awesome.min.css}"  rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/AdminLTE.min.css}"  rel="stylesheet" type="text/css"/>
+    <link th:href="@{/css/skins/skin-blue.min.css}"  rel="stylesheet" type="text/css"/>
 </head>
-<body>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
     <div th:replace="fragments/header :: header"></div>
-    <div class="locationLine" layout:fragment="prompt">当前位置：首页 &gt; <em>页面</em></div>
-    <div th:replace="fragments/center :: center"></div>
+    <div th:replace="fragments/sidebar :: sidebar"></div>
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+            <div layout:fragment="prompt">
+                <!--<h1>
+                    Page Header
+                    <small>Optional description</small>
+                </h1>-->
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                    <li class="active">Here</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content container-fluid">
+            <div layout:fragment="content"></div>
+        </section>
+        <!-- /.content -->
+    </div>
+
     <div th:replace="fragments/footer :: footer"></div>
+</div>
+
+<!-- jQuery 3 -->
+<script src="/js/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="/js/bootstrap-3.4.1/js/bootstrap.min.js"></script>
+<!-- AdminLTE App -->
+<script src="/js/adminlte.min.js"></script>
 </body>
 </html>

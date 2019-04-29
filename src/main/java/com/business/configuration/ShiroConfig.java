@@ -41,6 +41,12 @@ public class ShiroConfig {
     public ShiroFilterFactoryBean shiroFilterFactoryBean() {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager());
+        /*// 如果不设置默认会自动寻找Web工程根目录下的"/login.jsp"页面
+        shiroFilterFactoryBean.setLoginUrl("/login.html");
+        // 登录成功后要跳转的链接
+        shiroFilterFactoryBean.setSuccessUrl("/admin/index");
+        // 未授权界面;
+        shiroFilterFactoryBean.setUnauthorizedUrl("/page/403");*/
         return shiroFilterFactoryBean;
     }
 

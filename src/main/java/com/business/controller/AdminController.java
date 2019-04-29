@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AdminController {
 
     @GetMapping("/index")
-//    @RequiresAuthentication
+    @RequiresAuthentication
     public String index() {
         return "sys/index";
     }
 
     @GetMapping("/auth")
-//    @RequiresAuthentication
+    @RequiresAuthentication
     @ResponseBody
     public String auth() {
         return "sys/index";
